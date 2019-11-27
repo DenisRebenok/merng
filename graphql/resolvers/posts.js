@@ -27,6 +27,8 @@ module.exports = {
 
   Mutation: {
     async createPost(_, { body }, context) {
+      if (body.trim() === '') throw new Error('Post body must not be empty')
+
       const user = checkAuth(context)
 
       const newPost = new Post({
@@ -50,12 +52,12 @@ module.exports = {
 
       try {
         const post = await Post.findById(postId)
-        if (post.username === user.username) {
-          await post.delete()
-          return 'Post deleted successfully'
-        } else {
+        if (post.username !== user.username) {
           throw new AuthenticationError('Action not allowed')
         }
+
+        await post.delete()
+        return 'Post deleted successfully'
       } catch (err) {
         throw new Error(err)
       }
