@@ -3,13 +3,20 @@ import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
 import { Button, Confirm, Icon } from 'semantic-ui-react'
 
-export default ({ postId }) => {
+import { FETCH_POSTS_QUERY } from '../util/graphql'
+
+export default ({ postId, callback }) => {
   const [confirmOpen, setConfirmOpen] = useState(false)
 
   const [deletePost] = useMutation(DELETE_POST_MUTATION, {
-    update() {
+    update(proxy) {
       setConfirmOpen(false)
-      // TODO: remove post from cache
+      const data = proxy.readQuery({
+        query: FETCH_POSTS_QUERY
+      })
+      data.getPosts = data.getPosts.filter(p => p.id !== postId)
+      proxy.writeQuery({ query: FETCH_POSTS_QUERY, data })
+      if (callback) callback()
     },
     variables: { postId }
   })
