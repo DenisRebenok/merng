@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { Button, Icon, Label } from 'semantic-ui-react'
 
-export default ({ user, post: { id, likes, likeCount } }) => {
+export default function LikeButton({ user, post: { id, likes, likeCount } }) {
   const [liked, setLiked] = useState(false)
 
   useEffect(() => {

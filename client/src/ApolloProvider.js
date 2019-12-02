@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React from 'react'
 import App from './App'
 import ApolloClient from 'apollo-client'

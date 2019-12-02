@@ -14,7 +14,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import SinglePost from './pages/SinglePost'
 
-export default () => {
+export default function App() {
   return (
     <AuthProvider>
       <Router>

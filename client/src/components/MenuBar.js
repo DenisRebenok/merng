@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 import { AuthContext } from '../context/auth'
 
-export default () => {
+export default function MenuBar() {
   const { user, logout } = useContext(AuthContext)
   const pathName = window.location.pathname
   const path = pathName === '/' ? 'home' : pathName.substr(1)
@@ -13,7 +13,7 @@ export default () => {
 
   const handleItemClick = (e, { name }) => setActiveItem(name)
 
-  const menuBar = user ? (
+  return user ? (
     <Menu pointing secondary size="massive" color="teal">
       <Menu.Item name={user.username} active as={Link} to="/" />
 
@@ -49,6 +49,4 @@ export default () => {
       </Menu.Menu>
     </Menu>
   )
-
-  return menuBar
 }

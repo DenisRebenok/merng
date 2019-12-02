@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useContext } from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import { useMutation } from '@apollo/react-hooks'
@@ -6,7 +7,7 @@ import gql from 'graphql-tag'
 import { AuthContext } from '../context/auth'
 import { useForm } from '../util/hooks'
 
-export default props => {
+export default function Login(props) {
   const context = useContext(AuthContext)
   const [errors, setErrors] = useState({})
 

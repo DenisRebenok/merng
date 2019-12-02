@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Card, Icon, Label, Image } from 'semantic-ui-react'
@@ -7,9 +8,9 @@ import { AuthContext } from '../context/auth'
 import LikeButton from './LikeButton'
 import DeleteButton from './DeleteButton'
 
-export default ({
+export default function PostCard({
   post: { body, id, createdAt, username, likeCount, commentCount, likes }
-}) => {
+}) {
   const { user } = useContext(AuthContext)
 
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
@@ -5,21 +6,27 @@ import { Button, Confirm, Icon } from 'semantic-ui-react'
 
 import { FETCH_POSTS_QUERY } from '../util/graphql'
 
-export default ({ postId, callback }) => {
+export default function DeleteButton({ postId, commentId, callback }) {
   const [confirmOpen, setConfirmOpen] = useState(false)
 
-  const [deletePost] = useMutation(DELETE_POST_MUTATION, {
+  const mutation = commentId ? DELETE_COMMENT_MUTATION : DELETE_POST_MUTATION
+
+  const [deletePostOrComment] = useMutation(mutation, {
     update(proxy) {
       setConfirmOpen(false)
-      const data = proxy.readQuery({
-        query: FETCH_POSTS_QUERY
-      })
-      data.getPosts = data.getPosts.filter(p => p.id !== postId)
-      proxy.writeQuery({ query: FETCH_POSTS_QUERY, data })
+
+      if (!commentId) {
+        const data = proxy.readQuery({
+          query: FETCH_POSTS_QUERY
+        })
+        data.getPosts = data.getPosts.filter(p => p.id !== postId)
+        proxy.writeQuery({ query: FETCH_POSTS_QUERY, data })
+      }
       if (callback) callback()
     },
-    variables: { postId }
+    variables: { postId, commentId }
   })
+
   return (
     <>
       <Button color="red" floated="right" onClick={() => setConfirmOpen(true)}>
@@ -28,7 +35,7 @@ export default ({ postId, callback }) => {
       <Confirm
         open={confirmOpen}
         onCancel={() => setConfirmOpen(false)}
-        onConfirm={deletePost}
+        onConfirm={deletePostOrComment}
       />
     </>
   )
@@ -37,5 +44,20 @@ export default ({ postId, callback }) => {
 const DELETE_POST_MUTATION = gql`
   mutation deletePost($postId: ID!) {
     deletePost(postId: $postId)
+  }
+`
+
+const DELETE_COMMENT_MUTATION = gql`
+  mutation deleteComment($postId: ID!, $commentId: ID!) {
+    deleteComment(postId: $postId, commentId: $commentId) {
+      id
+      comments {
+        id
+        username
+        createdAt
+        body
+      }
+      commentCount
+    }
   }
 `

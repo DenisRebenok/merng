@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useContext } from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import { Grid, Transition } from 'semantic-ui-react'
 
@@ -7,16 +7,15 @@ import PostCard from '../components/PostCard'
 import PostForm from '../components/PostForm'
 import { FETCH_POSTS_QUERY } from '../util/graphql'
 
-export default () => {
-  const [posts, setPosts] = useState([])
+export default function Home() {
   const { user } = useContext(AuthContext)
 
   const { loading, error, data } = useQuery(FETCH_POSTS_QUERY)
-  useEffect(() => {
-    if (data) setPosts(data.getPosts)
-  }, [data])
   if (loading) return <h1>Loading posts..</h1>
   if (error) return <p>{error.message}</p>
+
+  const posts = data && data.getPosts ? data.getPosts : null
+  if (!posts) return <p>Loading posts..</p>
 
   return (
     <Grid columns={3}>
